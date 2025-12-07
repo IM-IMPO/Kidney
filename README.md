@@ -1,6 +1,3 @@
-Here is a **clean and ready-to-use README prompt** you can post on GitHub or share with others.
-It is written so people can visit **kidnee.netlify.app**, test it, and leave feedback or change requests.
-
 ---
 
 # **README – Feedback Request for Kidney Risk App**
