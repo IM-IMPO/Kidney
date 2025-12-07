@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Kidney Risk Assessment System</title>
+    <meta name="description" content="Comprehensive kidney disease risk assessment and patient management system">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Authentication Screen -->
+    <div id="auth-screen" class="screen active">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                    <h1>Kidney Risk Assessment</h1>
+                    <p>Clinical Decision Support System</p>
+                </div>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="signup">Create Account</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" required 
+                               aria-label="Email address for login"
+                               placeholder="doctor@hospital.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required 
+                               aria-label="Password for login"
+                               placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span>Sign In</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                    <p class="auth-error" id="login-error" role="alert"></p>
+                </form>
+
+                <!-- Signup Form -->
+                <form id="signup-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" required 
+                               aria-label="Your full name"
+                               placeholder="Dr. Jane Smith">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" required 
+                               aria-label="Email address for new account"
+                               placeholder="doctor@hospital.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" required 
+                               aria-label="Password (minimum 6 characters)"
+                               placeholder="Minimum 6 characters" minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm Password</label>
+                        <input type="password" id="signup-confirm" required 
+                               aria-label="Confirm your password"
+                               placeholder="Re-enter password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span>Create Account</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                    <p class="auth-error" id="signup-error" role="alert"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app-screen" class="screen">
+        <!-- Navigation Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <svg class="header-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                <h2>Kidney Risk Assessment</h2>
+            </div>
+            <div class="header-right">
+                <span class="user-name" id="current-user"></span>
+                <button class="btn btn-secondary" id="logout-btn" aria-label="Logout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view active">
+                <div class="view-header">
+                    <div>
+                        <h1>Patient Dashboard</h1>
+                        <p>Manage patients and assess kidney disease risk</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" id="import-data-btn" aria-label="Import patient data">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Import
+                        </button>
+                        <button class="btn btn-secondary" id="export-data-btn" aria-label="Export patient data">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Export
+                        </button>
+                        <button class="btn btn-primary" id="add-patient-btn" aria-label="Add new patient">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Add Patient
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon high-risk">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-label">High Risk</span>
+                            <span class="stat-value" id="high-risk-count">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon medium-risk">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-label">Medium Risk</span>
+                            <span class="stat-value" id="medium-risk-count">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon low-risk">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-label">Low Risk</span>
+                            <span class="stat-value" id="low-risk-count">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon total">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-label">Total Patients</span>
+                            <span class="stat-value" id="total-patients-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Patient List</h3>
+                        <input type="search" id="patient-search" placeholder="Search patients..." 
+                               aria-label="Search patients by name or ID" class="search-input">
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" role="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>Audited By</th>
+                                    <th>Last Assessment</th>
+                                    <th>Risk Level</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patient-list">
+                                <tr class="empty-state">
+                                    <td colspan="8">
+                                        <div class="empty-state-content">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                                <circle cx="9" cy="7" r="4"/>
+                                                <line x1="19" y1="8" x2="19" y2="14"/>
+                                                <line x1="22" y1="11" x2="16" y2="11"/>
+                                            </svg>
+                                            <p>No patients yet. Add your first patient to get started.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Profile View -->
+            <div id="profile-view" class="view">
+                <div class="view-header">
+                    <button class="btn btn-secondary" id="back-to-dashboard" aria-label="Back to dashboard">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back to Dashboard
+                    </button>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" id="edit-patient-btn" aria-label="Edit patient information">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                            Edit Patient
+                        </button>
+                        <button class="btn btn-danger" id="delete-patient-btn" aria-label="Delete patient">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+
+                <div id="patient-profile-content">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Patient Form Modal -->
+            <div id="patient-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modal-title">Add New Patient</h2>
+                        <button class="modal-close" aria-label="Close modal">&times;</button>
+                    </div>
+                    <form id="patient-form">
+                        <div class="form-section">
+                            <h3>Basic Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="patient-name">Full Name *</label>
+                                    <input type="text" id="patient-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="patient-age">Age *</label>
+                                    <input type="number" id="patient-age" required min="0" max="120">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="patient-gender">Gender *</label>
+                                    <select id="patient-gender" required>
+                                        <option value="">Select...</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="patient-height">Height (cm) *</label>
+                                    <input type="number" id="patient-height" required min="50" max="250" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="patient-weight">Weight (kg) *</label>
+                                    <input type="number" id="patient-weight" required min="20" max="300" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Laboratory Tests</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="serum-creatinine">Serum Creatinine (mg/dL) *</label>
+                                    <input type="number" id="serum-creatinine" required step="0.01" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bun">BUN (mg/dL) *</label>
+                                    <input type="number" id="bun" required step="0.1" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gfr">GFR (mL/min/1.73m²) *</label>
+                                    <input type="number" id="gfr" required step="0.1" min="0">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="acr">ACR - Albumin/Creatinine Ratio (mg/g) *</label>
+                                    <input type="number" id="acr" required step="0.1" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="serum-calcium">Serum Calcium (mg/dL) *</label>
+                                    <input type="number" id="serum-calcium" required step="0.1" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="protein-urine">Protein in Urine (mg/dL) *</label>
+                                    <input type="number" id="protein-urine" required step="0.1" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Blood Pressure</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bp-systolic">Systolic (mmHg) *</label>
+                                    <input type="number" id="bp-systolic" required min="60" max="250">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bp-diastolic">Diastolic (mmHg) *</label>
+                                    <input type="number" id="bp-diastolic" required min="40" max="150">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Medical History</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="family-history">Family History of Kidney Disease *</label>
+                                    <select id="family-history" required>
+                                        <option value="">Select...</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        <option value="Unknown">Unknown</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Lifestyle Factors</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="smoking">Smoking Status *</label>
+                                    <select id="smoking" required>
+                                        <option value="">Select...</option>
+                                        <option value="Never">Never</option>
+                                        <option value="Former">Former</option>
+                                        <option value="Current">Current</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="alcohol">Alcohol Consumption *</label>
+                                    <select id="alcohol" required>
+                                        <option value="">Select...</option>
+                                        <option value="None">None</option>
+                                        <option value="Light">Light (1-7 drinks/week)</option>
+                                        <option value="Moderate">Moderate (8-14 drinks/week)</option>
+                                        <option value="Heavy">Heavy (15+ drinks/week)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="physical-activity">Physical Activity Level *</label>
+                                    <select id="physical-activity" required>
+                                        <option value="">Select...</option>
+                                        <option value="Sedentary">Sedentary (< 30 min/week)</option>
+                                        <option value="Light">Light (30-150 min/week)</option>
+                                        <option value="Moderate">Moderate (150-300 min/week)</option>
+                                        <option value="Active">Active (> 300 min/week)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diet-quality">Diet Quality *</label>
+                                    <select id="diet-quality" required>
+                                        <option value="">Select...</option>
+                                        <option value="Poor">Poor</option>
+                                        <option value="Fair">Fair</option>
+                                        <option value="Good">Good</option>
+                                        <option value="Excellent">Excellent</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sleep-quality">Sleep Quality *</label>
+                                    <select id="sleep-quality" required>
+                                        <option value="">Select...</option>
+                                        <option value="Poor">Poor (< 5 hours)</option>
+                                        <option value="Fair">Fair (5-6 hours)</option>
+                                        <option value="Good">Good (7-8 hours)</option>
+                                        <option value="Excellent">Excellent (8+ hours)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-actions">
+                            <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Patient</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Export Format Modal -->
+    <div id="export-modal" class="modal" role="dialog" aria-labelledby="export-modal-title" aria-modal="true">
+        <div class="modal-content export-modal-content">
+            <div class="modal-header">
+                <h2 id="export-modal-title">Export Patient Data</h2>
+                <button class="modal-close" id="export-modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="export-options">
+                <p class="export-description">Select the format for exporting patient data:</p>
+                <div class="export-format-grid">
+                    <button class="export-format-btn" data-format="json">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <path d="M8 13h2M14 13h2M8 17h2M14 17h2"/>
+                        </svg>
+                        <span class="format-name">JSON</span>
+                        <span class="format-desc">Raw data format</span>
+                    </button>
+                    <button class="export-format-btn" data-format="pdf">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <path d="M9 15v-2h2c.6 0 1 .4 1 1s-.4 1-1 1H9zm0 0v2"/>
+                            <path d="M13 13h1.5c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5H13v-3z"/>
+                        </svg>
+                        <span class="format-name">PDF</span>
+                        <span class="format-desc">Printable report</span>
+                    </button>
+                    <button class="export-format-btn" data-format="word">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <path d="M8 13l2 6 2-6 2 6 2-6"/>
+                        </svg>
+                        <span class="format-name">Word</span>
+                        <span class="format-desc">Editable document</span>
+                    </button>
+                    <button class="export-format-btn" data-format="image">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                        <span class="format-name">Image</span>
+                        <span class="format-desc">PNG/JPEG snapshot</span>
+                    </button>
+                </div>
+                <div id="image-format-options" class="image-format-options" style="display: none;">
+                    <label>Image Format:</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="image-format" value="png" checked> PNG
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="image-format" value="jpeg"> JPEG
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="export-cancel-btn">Cancel</button>
+                <button type="button" class="btn btn-primary" id="export-confirm-btn" disabled>Export</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="file-input" accept=".json" style="display: none;">
+
+    <script src="random-forest.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

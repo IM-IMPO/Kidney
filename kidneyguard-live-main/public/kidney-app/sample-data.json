@@ -1,0 +1,193 @@
+{
+  "exportDate": "2025-01-01T12:00:00.000Z",
+  "version": "1.0",
+  "patients": [
+    {
+      "id": "P00001234",
+      "name": "John Smith",
+      "Age": 65,
+      "Gender": "Male",
+      "HeightCm": 175,
+      "WeightKg": 82,
+      "SerumCreatinine": 1.8,
+      "BUN": 35,
+      "GFR": 55,
+      "ACR": 120,
+      "SerumElectrolytesCalcium": 9.2,
+      "ProteinInUrine": 280,
+      "BloodPressureSystolic": 145,
+      "BloodPressureDiastolic": 88,
+      "FamilyHistory": "Yes",
+      "Smoking": "Former",
+      "AlcoholConsumption": "Light",
+      "PhysicalActivity": "Light",
+      "DietQuality": "Fair",
+      "SleepQuality": "Fair",
+      "riskLabel": "Medium",
+      "riskScore": 62,
+      "riskProbabilities": {
+        "high": 0.3,
+        "medium": 0.6,
+        "low": 0.1
+      },
+      "lastAssessment": "2025-01-15T10:30:00.000Z",
+      "history": [
+        {
+          "date": "2024-12-01T09:00:00.000Z",
+          "riskLabel": "Medium",
+          "riskScore": 58,
+          "data": {
+            "SerumCreatinine": 1.7,
+            "GFR": 58,
+            "ACR": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "P00001235",
+      "name": "Maria Garcia",
+      "Age": 42,
+      "Gender": "Female",
+      "HeightCm": 162,
+      "WeightKg": 68,
+      "SerumCreatinine": 0.9,
+      "BUN": 16,
+      "GFR": 95,
+      "ACR": 15,
+      "SerumElectrolytesCalcium": 9.5,
+      "ProteinInUrine": 80,
+      "BloodPressureSystolic": 118,
+      "BloodPressureDiastolic": 76,
+      "FamilyHistory": "No",
+      "Smoking": "Never",
+      "AlcoholConsumption": "None",
+      "PhysicalActivity": "Active",
+      "DietQuality": "Excellent",
+      "SleepQuality": "Good",
+      "riskLabel": "Low",
+      "riskScore": 12,
+      "riskProbabilities": {
+        "high": 0.0,
+        "medium": 0.1,
+        "low": 0.9
+      },
+      "lastAssessment": "2025-01-18T14:20:00.000Z",
+      "history": []
+    },
+    {
+      "id": "P00001236",
+      "name": "Robert Johnson",
+      "Age": 72,
+      "Gender": "Male",
+      "HeightCm": 180,
+      "WeightKg": 95,
+      "SerumCreatinine": 2.8,
+      "BUN": 58,
+      "GFR": 28,
+      "ACR": 450,
+      "SerumElectrolytesCalcium": 8.8,
+      "ProteinInUrine": 620,
+      "BloodPressureSystolic": 165,
+      "BloodPressureDiastolic": 95,
+      "FamilyHistory": "Yes",
+      "Smoking": "Current",
+      "AlcoholConsumption": "Moderate",
+      "PhysicalActivity": "Sedentary",
+      "DietQuality": "Poor",
+      "SleepQuality": "Poor",
+      "riskLabel": "High",
+      "riskScore": 88,
+      "riskProbabilities": {
+        "high": 0.9,
+        "medium": 0.1,
+        "low": 0.0
+      },
+      "lastAssessment": "2025-01-20T11:45:00.000Z",
+      "history": [
+        {
+          "date": "2024-11-15T10:00:00.000Z",
+          "riskLabel": "High",
+          "riskScore": 82,
+          "data": {
+            "SerumCreatinine": 2.5,
+            "GFR": 32,
+            "ACR": 380
+          }
+        },
+        {
+          "date": "2024-09-10T09:30:00.000Z",
+          "riskLabel": "Medium",
+          "riskScore": 68,
+          "data": {
+            "SerumCreatinine": 2.1,
+            "GFR": 40,
+            "ACR": 280
+          }
+        }
+      ]
+    },
+    {
+      "id": "P00001237",
+      "name": "Linda Chen",
+      "Age": 58,
+      "Gender": "Female",
+      "HeightCm": 158,
+      "WeightKg": 72,
+      "SerumCreatinine": 1.4,
+      "BUN": 28,
+      "GFR": 68,
+      "ACR": 85,
+      "SerumElectrolytesCalcium": 9.3,
+      "ProteinInUrine": 190,
+      "BloodPressureSystolic": 138,
+      "BloodPressureDiastolic": 84,
+      "FamilyHistory": "Unknown",
+      "Smoking": "Never",
+      "AlcoholConsumption": "Light",
+      "PhysicalActivity": "Moderate",
+      "DietQuality": "Good",
+      "SleepQuality": "Good",
+      "riskLabel": "Medium",
+      "riskScore": 45,
+      "riskProbabilities": {
+        "high": 0.1,
+        "medium": 0.7,
+        "low": 0.2
+      },
+      "lastAssessment": "2025-01-22T15:00:00.000Z",
+      "history": []
+    },
+    {
+      "id": "P00001238",
+      "name": "David Brown",
+      "Age": 35,
+      "Gender": "Male",
+      "HeightCm": 178,
+      "WeightKg": 75,
+      "SerumCreatinine": 1.0,
+      "BUN": 18,
+      "GFR": 105,
+      "ACR": 8,
+      "SerumElectrolytesCalcium": 9.6,
+      "ProteinInUrine": 45,
+      "BloodPressureSystolic": 115,
+      "BloodPressureDiastolic": 72,
+      "FamilyHistory": "No",
+      "Smoking": "Never",
+      "AlcoholConsumption": "Light",
+      "PhysicalActivity": "Active",
+      "DietQuality": "Good",
+      "SleepQuality": "Excellent",
+      "riskLabel": "Low",
+      "riskScore": 8,
+      "riskProbabilities": {
+        "high": 0.0,
+        "medium": 0.0,
+        "low": 1.0
+      },
+      "lastAssessment": "2025-01-25T09:15:00.000Z",
+      "history": []
+    }
+  ]
+}
